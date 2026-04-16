@@ -1,28 +1,44 @@
 # MapleBudget Frontend
 
-## Local Setup
+The frontend is a Vite React app styled with Tailwind CSS and local
+shadcn/ui-style components.
 
-Install dependencies:
+## Setup
 
 ```powershell
-cd frontend
 npm install
 ```
 
-Run the frontend:
+## Environment
+
+Copy the example file if you need to override the backend URL:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Supported variable:
+
+```text
+VITE_API_BASE_URL=http://127.0.0.1:8000
+```
+
+## Run
 
 ```powershell
 npm run dev
 ```
 
-The app defaults to this backend URL:
+Open:
 
 ```text
-http://127.0.0.1:8000
+http://127.0.0.1:5173
 ```
 
-To override it, create `frontend/.env`:
+## Build
 
-```text
-VITE_API_BASE_URL=http://127.0.0.1:8000
+```powershell
+npm run build
 ```
+
+See the repository root README for full backend, migration, and test commands.

@@ -33,10 +33,24 @@ async function request(path, options = {}) {
 
   if (!response.ok) {
     const message = data?.detail || "Request failed";
-    throw new Error(Array.isArray(message) ? "Validation failed" : message);
+    throw new Error(formatApiError(message));
   }
 
   return data;
+}
+
+function formatApiError(message) {
+  if (!Array.isArray(message)) {
+    return message;
+  }
+
+  return message
+    .map((item) => {
+      const field = Array.isArray(item.loc) ? item.loc.slice(1).join(".") : "";
+      return field ? `${field}: ${item.msg}` : item.msg;
+    })
+    .filter(Boolean)
+    .join("; ") || "Validation failed";
 }
 
 export function registerUser(payload) {
@@ -75,4 +89,68 @@ export function getSpendingByCategory() {
 
 export function getBudgetProgress() {
   return request("/dashboard/current-month-budget-progress");
+}
+
+export function getCategories() {
+  return request("/categories");
+}
+
+export function createCategory(payload) {
+  return request("/categories", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+export function getTransactions() {
+  return request("/transactions");
+}
+
+export function createTransaction(payload) {
+  return request("/transactions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+export function updateTransaction(transactionId, payload) {
+  return request(`/transactions/${transactionId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+export function deleteTransaction(transactionId) {
+  return request(`/transactions/${transactionId}`, {
+    method: "DELETE",
+  });
+}
+
+export function getBudgets() {
+  return request("/budgets");
+}
+
+export function createBudget(payload) {
+  return request("/budgets", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+export function updateBudget(budgetId, payload) {
+  return request(`/budgets/${budgetId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+export function deleteBudget(budgetId) {
+  return request(`/budgets/${budgetId}`, {
+    method: "DELETE",
+  });
 }
