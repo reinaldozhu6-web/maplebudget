@@ -301,7 +301,7 @@ function LoginPage({ onLogin }) {
           </div>
         </CardHeader>
         <CardContent className="px-8 pb-8">
-          <form className="grid gap-6" onSubmit={handleSubmit}>
+          <form className="grid gap-6" data-testid="login-form" onSubmit={handleSubmit}>
             <div className="grid gap-2.5">
               <Label htmlFor="login-email">Email</Label>
               <Input
@@ -397,7 +397,7 @@ function RegisterPage({ onRegister }) {
           </div>
         </CardHeader>
         <CardContent className="px-8 pb-8">
-          <form className="grid gap-5" onSubmit={handleSubmit}>
+          <form className="grid gap-5" data-testid="register-form" onSubmit={handleSubmit}>
             <div className="grid gap-2.5">
               <Label htmlFor="register-username">Username</Label>
               <Input
@@ -983,7 +983,7 @@ function TransactionsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="px-7 pb-7">
-            <form className="grid gap-5" onSubmit={handleSubmit}>
+            <form className="grid gap-5" data-testid="transaction-form" onSubmit={handleSubmit}>
               <FormGrid>
                 <FormField label="Amount" htmlFor="transaction-amount">
                   <Input
@@ -1379,7 +1379,7 @@ function BudgetsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="px-7 pb-7">
-            <form className="grid gap-5" onSubmit={handleSubmit}>
+            <form className="grid gap-5" data-testid="budget-form" onSubmit={handleSubmit}>
               <FormField label="Amount" htmlFor="budget-amount">
                 <Input
                   className="h-12"
@@ -1650,7 +1650,7 @@ function CategoriesPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="px-7 pb-7">
-            <form className="grid gap-5" onSubmit={handleSubmit}>
+            <form className="grid gap-5" data-testid="category-form" onSubmit={handleSubmit}>
               <FormField label="Name" htmlFor="category-name">
                 <Input
                   className="h-12"
@@ -1912,7 +1912,10 @@ function TransactionCompactRow({ transaction, categories }) {
   const isIncome = transaction.type === "income";
 
   return (
-    <div className="flex items-center justify-between gap-4 rounded-lg border bg-white p-4">
+    <div
+      className="flex items-center justify-between gap-4 rounded-lg border bg-white p-4"
+      data-testid="recent-transaction"
+    >
       <div className="min-w-0">
         <div className="flex items-center gap-2">
           <Badge variant={isIncome ? "success" : "warning"}>
@@ -1939,7 +1942,7 @@ function BudgetRiskRow({ item }) {
   const isHighRisk = percentUsed >= 85;
 
   return (
-    <div className="grid gap-3 rounded-lg border bg-white p-4">
+    <div className="grid gap-3 rounded-lg border bg-white p-4" data-testid="budget-risk">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold">
@@ -1979,6 +1982,7 @@ function TransactionListItem({
         "grid gap-4 rounded-lg border bg-white p-4 transition-colors lg:grid-cols-[1fr_auto]",
         isEditing && "border-primary bg-emerald-50/40",
       )}
+      data-testid="transaction-row"
     >
       <div className="grid gap-3 sm:grid-cols-[minmax(0,1.4fr)_minmax(0,0.8fr)_minmax(0,0.8fr)] sm:items-center">
         <div className="min-w-0">
@@ -2038,6 +2042,7 @@ function BudgetListItem({
         "grid gap-4 rounded-lg border bg-white p-4 transition-colors lg:grid-cols-[1fr_auto]",
         isEditing && "border-primary bg-emerald-50/40",
       )}
+      data-testid="budget-row"
     >
       <div className="grid gap-3 sm:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)_minmax(0,0.8fr)] sm:items-center">
         <div className="min-w-0">
@@ -2116,7 +2121,11 @@ function CategoryGroup({
         ) : (
           <div className="grid gap-3">
             {categories.map((category) => (
-              <div className="flex items-center justify-between gap-4 rounded-lg border bg-white p-4" key={category.id}>
+              <div
+                className="flex items-center justify-between gap-4 rounded-lg border bg-white p-4"
+                data-testid="category-row"
+                key={category.id}
+              >
                 <div className="min-w-0">
                   <p className="truncate text-base font-semibold">{category.name}</p>
                   <p className="mt-1 text-sm text-muted-foreground">

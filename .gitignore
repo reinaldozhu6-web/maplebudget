@@ -33,6 +33,8 @@ dist/
 build/
 frontend/dist/
 frontend/build/
+frontend/playwright-report/
+frontend/test-results/
 
 # Editors and OS files
 .vscode/

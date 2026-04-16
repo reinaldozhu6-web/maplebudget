@@ -191,7 +191,26 @@ cd frontend
 npm run build
 ```
 
-There are no frontend end-to-end tests yet.
+Frontend end-to-end tests:
+
+```powershell
+cd frontend
+npm run test:e2e
+```
+
+The Playwright tests expect these servers to already be running:
+
+```text
+Frontend: http://127.0.0.1:5173
+Backend:  http://127.0.0.1:8000
+```
+
+Open the Playwright UI runner:
+
+```powershell
+cd frontend
+npm run test:e2e:ui
+```
 
 ## Common Local Workflow
 
@@ -227,5 +246,4 @@ Not implemented yet:
 
 - Category edit/delete
 - Multi-currency conversion
-- Frontend end-to-end tests
 - Production deployment configuration

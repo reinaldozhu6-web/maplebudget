@@ -41,4 +41,25 @@ http://127.0.0.1:5173
 npm run build
 ```
 
+## End-To-End Tests
+
+The Playwright tests expect the frontend and backend to already be running:
+
+```text
+Frontend: http://127.0.0.1:5173
+Backend:  http://127.0.0.1:8000
+```
+
+Run the tests:
+
+```powershell
+npm run test:e2e
+```
+
+Open the Playwright UI runner:
+
+```powershell
+npm run test:e2e:ui
+```
+
 See the repository root README for full backend, migration, and test commands.
