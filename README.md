@@ -1,30 +1,63 @@
 # MapleBudget
 
-MapleBudget is a personal finance web app for tracking income, expenses,
-categories, monthly budgets, and dashboard analytics.
+MapleBudget is a full-stack personal finance workspace for tracking income,
+expenses, spending categories, monthly budgets, and dashboard health. It pairs a
+FastAPI backend with a Vite React frontend so users can register, sign in, record
+money movement, and see the current month's budget picture in one place.
 
-## Stack
+## What It Does
 
-- Backend: FastAPI, SQLAlchemy, Alembic, Pydantic
-- Frontend: Vite, React, Tailwind CSS, shadcn/ui-style local components
-- Default local database: SQLite at `maplebudget.db`
-- Production database target: PostgreSQL via `DATABASE_URL`
+- Secure account registration and JWT-based login.
+- Category management for income and expense groups.
+- Transaction tracking with create, list, edit, delete, date, note, type, and
+  optional category assignment.
+- Monthly budget tracking for overall budgets or category-specific budgets.
+- Dashboard analytics for current-month income, expenses, net balance, spending
+  by category, recent transactions, and budget progress.
+- User-scoped data access so budgets, categories, and transactions stay attached
+  to the authenticated account.
+- Local SQLite setup by default, with PostgreSQL support through `DATABASE_URL`.
 
-## Project Layout
+## Tech Stack
+
+| Area | Tools |
+| --- | --- |
+| Backend | FastAPI, SQLAlchemy, Alembic, Pydantic, python-jose, passlib |
+| Frontend | React 19, Vite 7, Tailwind CSS, local shadcn/ui-style components |
+| Database | SQLite for local development, PostgreSQL-ready configuration |
+| Testing | Pytest, HTTPX, Playwright |
+
+## Repository Layout
 
 ```text
 backend/
   app/
-    api/          FastAPI routers
-    core/         settings, database, security helpers
-    models/       SQLAlchemy models
-    schemas/      Pydantic request/response schemas
-  alembic/        migration environment and versions
-  tests/          backend pytest suite
+    api/          FastAPI route modules
+    core/         settings, database, and security helpers
+    models/       SQLAlchemy database models
+    schemas/      Pydantic request and response schemas
+  alembic/        migration environment and version files
+  tests/          backend API and data-isolation tests
+
 frontend/
-  src/            React app, API client, styles, UI components
+  src/            React application, API client, styles, and UI components
+  tests/e2e/      Playwright browser flows
   package.json    frontend scripts and dependencies
 ```
+
+## Product Surface
+
+The application includes these authenticated screens:
+
+- **Dashboard**: current-month summary cards, category spending, budget progress,
+  recent transactions, and budget risk indicators.
+- **Transactions**: create, filter, edit, and delete income or expense records.
+- **Budgets**: create, filter, edit, and delete monthly budget targets.
+- **Categories**: create and view income and expense categories.
+
+The backend exposes matching API modules for auth, categories, transactions,
+budgets, and dashboard reporting. Interactive OpenAPI docs are available at
+`http://127.0.0.1:8000/docs` when the backend is running.
 
 ## Prerequisites
 
@@ -32,12 +65,11 @@ frontend/
 - Node.js 20 or newer
 - npm
 
-Windows PowerShell examples are used below because the project is currently being
-developed on Windows.
+The commands below use Windows PowerShell from the repository root.
 
 ## Backend Setup
 
-From the repository root:
+Create a virtual environment and install the backend dependencies:
 
 ```powershell
 python -m venv venv
@@ -45,113 +77,78 @@ python -m venv venv
 pip install -r backend\requirements.txt
 ```
 
-Create an optional backend environment file:
+Optionally copy the backend environment example:
 
 ```powershell
 Copy-Item backend\.env.example backend\.env
 ```
 
-If `backend/.env` is absent, the backend uses the defaults documented below.
+If `backend/.env` is not present, the backend uses local defaults.
 
-## Backend Environment Variables
-
-The backend reads `backend/.env`.
-
-| Variable | Default | Description |
+| Variable | Default | Purpose |
 | --- | --- | --- |
-| `APP_NAME` | `MapleBudget API` | API application name. |
-| `DATABASE_URL` | `sqlite:///./maplebudget.db` | SQLAlchemy database URL. |
-| `SECRET_KEY` | `change-this-in-production` | JWT signing key. Change this outside local development. |
-| `ALGORITHM` | `HS256` | JWT signing algorithm. |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | `60` | Access token lifetime in minutes. |
+| `APP_NAME` | `MapleBudget API` | API application name |
+| `DATABASE_URL` | `sqlite:///./maplebudget.db` | SQLAlchemy database URL |
+| `SECRET_KEY` | `change-this-in-production` | JWT signing key |
+| `ALGORITHM` | `HS256` | JWT signing algorithm |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | `60` | Access token lifetime |
 
-Example `backend/.env`:
+Example local configuration:
 
 ```text
 DATABASE_URL=sqlite:///./maplebudget.db
-SECRET_KEY=replace-this-for-shared-or-production-environments
+SECRET_KEY=replace-this-for-local-development
+ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=60
 ```
 
-For PostgreSQL:
+PostgreSQL can be used by changing `DATABASE_URL`:
 
 ```text
 DATABASE_URL=postgresql://user:password@localhost:5432/maplebudget
 ```
 
-## Database Migrations
-
-Run migrations from the repository root with the virtual environment active:
+Apply database migrations:
 
 ```powershell
 python -m alembic -c backend\alembic.ini upgrade head
 ```
 
-Create a new migration after model changes:
-
-```powershell
-python -m alembic -c backend\alembic.ini revision --autogenerate -m "describe change"
-```
-
-Inspect current migration state:
-
-```powershell
-python -m alembic -c backend\alembic.ini current
-python -m alembic -c backend\alembic.ini history
-```
-
-## Start The Backend
-
-From the repository root with the virtual environment active:
+Start the API:
 
 ```powershell
 python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-Health check:
+Useful backend URLs:
 
 ```text
-http://127.0.0.1:8000
-```
-
-Interactive API docs:
-
-```text
-http://127.0.0.1:8000/docs
+Health check: http://127.0.0.1:8000
+API docs:     http://127.0.0.1:8000/docs
 ```
 
 ## Frontend Setup
 
-From the repository root:
+Install the frontend dependencies:
 
 ```powershell
 cd frontend
 npm install
 ```
 
-Create an optional frontend environment file:
+Optionally copy the frontend environment example:
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-## Frontend Environment Variables
+The frontend reads one environment variable:
 
-The frontend reads `frontend/.env`.
-
-| Variable | Default | Description |
+| Variable | Default | Purpose |
 | --- | --- | --- |
-| `VITE_API_BASE_URL` | `http://127.0.0.1:8000` | Backend API base URL used by the React app. |
+| `VITE_API_BASE_URL` | `http://127.0.0.1:8000` | Backend API base URL |
 
-Example `frontend/.env`:
-
-```text
-VITE_API_BASE_URL=http://127.0.0.1:8000
-```
-
-## Start The Frontend
-
-From `frontend/`:
+Start the Vite dev server:
 
 ```powershell
 npm run dev
@@ -163,56 +160,7 @@ Open:
 http://127.0.0.1:5173
 ```
 
-Build production assets:
-
-```powershell
-npm run build
-```
-
-Preview a production build:
-
-```powershell
-npm run preview
-```
-
-## Test Commands
-
-Backend tests:
-
-```powershell
-.\venv\Scripts\Activate.ps1
-python -m pytest backend
-```
-
-Frontend build verification:
-
-```powershell
-cd frontend
-npm run build
-```
-
-Frontend end-to-end tests:
-
-```powershell
-cd frontend
-npm run test:e2e
-```
-
-The Playwright tests expect these servers to already be running:
-
-```text
-Frontend: http://127.0.0.1:5173
-Backend:  http://127.0.0.1:8000
-```
-
-Open the Playwright UI runner:
-
-```powershell
-cd frontend
-npm run test:e2e:ui
-```
-
-## Common Local Workflow
+## Local Development Workflow
 
 Terminal 1:
 
@@ -231,19 +179,74 @@ npm run dev
 
 Then open `http://127.0.0.1:5173`.
 
-## Current Product Scope
+## Testing
+
+Run the backend test suite:
+
+```powershell
+.\venv\Scripts\Activate.ps1
+python -m pytest backend
+```
+
+Build the frontend:
+
+```powershell
+cd frontend
+npm run build
+```
+
+Run Playwright end-to-end tests:
+
+```powershell
+cd frontend
+npm run test:e2e
+```
+
+The Playwright suite expects both servers to already be running:
+
+```text
+Frontend: http://127.0.0.1:5173
+Backend:  http://127.0.0.1:8000
+```
+
+Open the Playwright UI runner:
+
+```powershell
+cd frontend
+npm run test:e2e:ui
+```
+
+## API Coverage
+
+The backend test suite covers:
+
+- registration, login, duplicate-user handling, and authenticated user lookup;
+- authenticated category creation/listing and duplicate category protection;
+- transaction creation, listing, retrieval, updates, deletion, validation, and
+  user isolation;
+- budget creation, listing, retrieval, updates, deletion, duplicate protection,
+  validation, and user isolation;
+- dashboard totals, spending by category, budget progress, and auth guards.
+
+## Current Scope
 
 Implemented:
 
-- User registration, login, and current-user session check
-- Category create/list
-- Transaction create/list/edit/delete
-- Budget create/list/edit/delete
+- Full auth flow with protected frontend routes.
+- Category creation/listing.
+- Transaction create/list/edit/delete.
+- Budget create/list/edit/delete.
 - Dashboard summary, spending by category, budget progress, recent transactions,
-  and budget risk panels
+  and budget risk panels.
+- Alembic migrations for users, categories, transactions, and budgets.
+- Backend unit/API tests and browser-level stable-flow tests.
 
 Not implemented yet:
 
-- Category edit/delete
-- Multi-currency conversion
-- Production deployment configuration
+- Category edit/delete.
+- Multi-currency conversion.
+- Production deployment configuration.
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE).
