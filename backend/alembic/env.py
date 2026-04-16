@@ -10,6 +10,7 @@ sys.path.insert(0, str(ROOT_DIR))
 
 from backend.app.core.config import settings  # noqa: E402
 from backend.app.core.database import Base  # noqa: E402
+from backend.app.models.budget import Budget  # noqa: F401, E402
 from backend.app.models.category import Category  # noqa: F401, E402
 from backend.app.models.transaction import Transaction  # noqa: F401, E402
 from backend.app.models.user import User  # noqa: F401, E402
